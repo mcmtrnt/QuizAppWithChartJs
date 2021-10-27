@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+    <meta charset="UTF-8">
+    <head>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.6.0/chart.min.js" integrity="sha512-GMGzUEevhWh8Tc/njS0bDpwgxdCJLQBWG3Z2Ct+JGOpVnEmjvNx6ts4v6A2XJf1HOrtOsfhv3hBKpK9kE5z8AQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+        <title>Quiz App with Chart.js</title>
+    </head>
+    <body>
+        <div>QUIZ</div>
+        <br>
+        <div>
+            <label for="q1">2 + 2 =</label>
+            <select name="q1" id="q1">
+                <option disabled selected value> -- select an option -- </option>
+                <option value="N">1</option>
+                <option value="N">2</option>
+                <option value="N">3</option>
+                <option value="Y">4</option>
+            </select>
+            <br><br>
+            <label for="q2">1 + 1 =</label>
+            <select name="q2" id="q2">
+                <option disabled selected value> -- select an option -- </option>
+                <option value="N">1</option>
+                <option value="Y">2</option>
+                <option value="N">3</option>
+                <option value="N">4</option>
+            </select>
+            <br><br>
+            <label for="q3">4 - 1 =</label>
+            <select name="q3" id="q3">
+                <option disabled selected value> -- select an option -- </option>
+                <option value="N">1</option>
+                <option value="N">2</option>
+                <option value="Y">3</option>
+                <option value="N">4</option>
+            </select>
+            <br><br>
+            <button onclick="calculate(myChart)">Submit</button>
+        </div>
+        <br>
+        <canvas id="myChart"></canvas>
+    </body>
+
+    <script>
+        const ctx = document.getElementById('myChart').getContext('2d');
+        const myChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: ['1', '2', '3'],
+                datasets: [{
+                    label: '# of Votes',
+                    data: [0, 0, 0],
+                    backgroundColor: ['gray','gray','gray'],
+                    borderWidth: 1,
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        min: 0,
+                        max: 100,
+                        title: {
+                            display: true,
+                            text: 'Percent Correct',
+                        }
+                    },
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Question Number',
+                        }
+                    }
+                },
+                plugins: {
+                    title: {
+                        display: true,
+                        text: 'Quiz Results',
+                        position: 'top',
+                    }
+                }
+            }
+        });
+
+        function calculate(chart) {
+            correct = 0;
+            totalAnswered = 0;
+            backgroundColors = ['gray','gray','gray'];
+
+            for (i = 0; i < 3; i++)
+            {
+                if ('Y' == document.getElementById('q'+(i+1)).value) {
+                    correct += 1;
+                    backgroundColors[i] = 'green';
+                    console.log(backgroundColors);
+                }
+                else 
+                {
+                    backgroundColors[i] = 'red';
+                }
+                totalAnswered += 1;
+                updateChart(chart, correct, totalAnswered, i, backgroundColors);
+            }
+        }
+
+        function updateChart(chart, correct, totalAnswered, questionIndex, backgroundColors) {
+            chart.data.datasets[0].data[questionIndex] = (correct / totalAnswered) * 100;
+            
+            console.log(questionIndex);
+            console.log(chart.data.datasets[0].backgroundColor[questionIndex]);
+
+            chart.data.datasets[0].backgroundColor = backgroundColors;
+            chart.update();
+        }
+
+        </script>
+
+</html>
